@@ -1,0 +1,6 @@
+{
+  "AppSyncApiName": "pathways",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthModeLastUpdated": "2023-04-19T23:54:34.375Z"
+}

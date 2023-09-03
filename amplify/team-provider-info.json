@@ -1,0 +1,39 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-pathways-staging-222609-authRole",
+      "UnauthRoleArn": "arn:aws:iam::595040575338:role/amplify-pathways-staging-222609-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::595040575338:role/amplify-pathways-staging-222609-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-pathways-staging-222609-deployment",
+      "UnauthRoleName": "amplify-pathways-staging-222609-unauthRole",
+      "StackName": "amplify-pathways-staging-222609",
+      "StackId": "arn:aws:cloudformation:us-east-2:595040575338:stack/amplify-pathways-staging-222609/2f830370-df01-11ed-836a-0212378d6559",
+      "AmplifyAppId": "dtrufepj652ef"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "dtrufepj652ef",
+          "type": "manual"
+        }
+      },
+      "auth": {
+        "pathways": {}
+      },
+      "function": {
+        "pathwaysllpwy01": {
+          "deploymentBucketName": "amplify-pathways-staging-222609-deployment",
+          "s3Key": "amplify-builds/pathwaysllpwy01-LambdaLayerVersion5b08dbed-build.zip"
+        },
+        "pwenrolluserwithpathway": {
+          "deploymentBucketName": "amplify-pathways-staging-222609-deployment",
+          "s3Key": "amplify-builds/pwenrolluserwithpathway-43472b436656382b7775-build.zip"
+        }
+      },
+      "storage": {
+        "s3pathwaysstoragestaging": {}
+      }
+    }
+  }
+}

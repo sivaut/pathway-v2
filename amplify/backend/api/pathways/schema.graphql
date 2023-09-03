@@ -1,0 +1,183 @@
+type WalkTag @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  walks: [Walk] @manyToMany(relationName: "WalkWalkTag")
+}
+
+type PathwayTag @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  pathways: [Pathway] @manyToMany(relationName: "PathwayPathwayTag")
+}
+
+enum WorkStatus {
+  OPEN
+  DONE
+  DROP
+  SNOOZE
+}
+
+enum TaskItemType {
+  STANDARD
+  PERSONAL
+}
+
+type TaskItemExecution @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  TaskItem: TaskItem @hasOne
+  type: TaskItemType
+  status: WorkStatus
+  progressstepID: ID! @index(name: "byProgressStep")
+}
+
+type ProgressStep @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  status: Boolean
+  definedStep: Step @hasOne
+  progresswalkID: ID! @index(name: "byProgressWalk")
+  lastActedOn: AWSDate
+  TaskItemExecutions: [TaskItemExecution] @hasMany(indexName: "byProgressStep", fields: ["id"])
+}
+
+type ProgressWalk @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  progresspathID: ID! @index(name: "byProgressPath")
+  definedWalk: WalkTag @hasOne
+  hasProgressSteps: [ProgressStep] @hasMany(indexName: "byProgressWalk", fields: ["id"])
+  totalSteps: Int
+  doneSteps: Int
+  lastActedOn: AWSDate
+}
+
+type ProgressPath @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  definedPathwayVersion: PathwayVersion @hasOne
+  hasProgressWalks: [ProgressWalk] @hasMany(indexName: "byProgressPath", fields: ["id"])
+  totalWalks: Int
+  doneWalks: Int
+  totalSteps: Int
+  doneSteps: Int
+  lastActedOn: AWSDate
+  prefUserName: String!
+}
+
+enum StepType {
+  GOAL
+  ACHIEVEMENT
+  LEARN
+  WORK
+  OTHER
+}
+
+type TaskItem @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  tasksetID: ID! @index(name: "byTaskSet")
+  name: String!
+  description: String
+}
+
+type TaskSet @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  TaskItems: [TaskItem] @hasMany(indexName: "byTaskSet", fields: ["id"])
+}
+
+type Step @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  walkID: ID! @index(name: "byWalk")
+  TaskSet: TaskSet @hasOne
+  name: String!
+  description: String
+  videoLink: AWSURL
+  referenceLinks: [AWSURL]
+  sequence: Int!
+  type: StepType!
+}
+
+type Walk @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Steps: [Step] @hasMany(indexName: "byWalk", fields: ["id"])
+  pathwayversionID: ID! @index(name: "byPathwayVersion")
+  name: String!
+  description: String!
+  videoLink: AWSURL
+  referenceLinks: [AWSURL]
+  WalkTags: [WalkTag] @manyToMany(relationName: "WalkWalkTag")
+}
+
+type Enrollment @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  toPathway: Pathway @hasOne
+  tPathwayVersiono: PathwayVersion @hasOne
+  profileexplorerID: ID! @index(name: "byProfileExplorer")
+  ProgressPath: ProgressPath @hasOne
+}
+
+type ProfileExplorer @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  screenName: String
+  byUser: User @hasOne
+  Enrollments: [Enrollment] @hasMany(indexName: "byProfileExplorer", fields: ["id"])
+}
+
+enum PublishingStatus {
+  DRAFT
+  PREVIEW
+  PBLISHED
+}
+
+type PathwayVersion @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  ofPathway: Pathway @belongsTo
+  version: Int
+  published: AWSDate
+  status: PublishingStatus
+  Walks: [Walk] @hasMany(indexName: "byPathwayVersion", fields: ["id"])
+  latest: Boolean
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  email: String
+  firstName: String
+  lastName: String
+  graduatingYear: Int
+  asExplorer: ProfileExplorer @belongsTo
+}
+
+type Grade @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  gradeLevel: Int
+  pathwayID: ID! @index(name: "byPathway")
+}
+
+type Pathway @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  description: String
+  thumbnail: AWSURL
+  suggestedGrades: [Grade] @hasMany(indexName: "byPathway", fields: ["id"])
+  hasManyVersion: PathwayVersion @hasOne
+  latestPathwayVersion: PathwayVersion @hasOne
+  PathwayTags: [PathwayTag] @manyToMany(relationName: "PathwayPathwayTag")
+  tags: String
+}
+
+type Thread @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  posts: [Post] @hasMany(indexName: "byThread", fields: ["id"])
+}
+
+type Post @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  comments: [Comment] @hasMany
+  oblogID: ID! @index(name: "byThread")
+}
+
+type Comment @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  post: Post @belongsTo
+  content: String!
+}
+ 
